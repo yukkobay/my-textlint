@@ -3,36 +3,45 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "compile-textlint-worker": "textlint-script-compiler --mode production --output-dir ./public --metadataName 'textlint-worker' --metadataNamespace 'http://localhost:3000/' --metadataHomepage 'http://localhost:3000/'",
+    "prebuild": "npm run compile-textlint-worker",
     "dev": "next dev",
     "build": "next build && next export",
-    "start": "next start",
     "_format": "prettier --write --ignore-path .eslintignore '**/*.{js,ts,tsx}'",
     "_lint": "eslint . --ext .js --ext .ts --ext .tsx --fix --cache --cache-location ./node_modules/.cache/eslint",
     "lint": "npm run _format && npm run _lint",
-    "compile-textlint-worker": "textlint-script-compiler --mode production --output-dir ./public --metadataName 'textlint-worker' --metadataNamespace 'http://localhost:3000/' --metadataHomepage 'http://localhost:3000/'",
-    "prebuild": "npm run compile-textlint-worker"
+    "test": "vitest",
+    "test:coverage": "vitest run --coverage"
   },
   "dependencies": {
     "@next/font": "13.0.7",
     "@types/node": "18.11.17",
     "@types/react": "18.0.26",
     "@types/react-dom": "18.0.9",
-    "eslint-config-next": "13.0.7",
     "next": "13.0.7",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "typescript": "4.9.4"
   },
   "devDependencies": {
+    "@testing-library/jest-dom": "^5.16.5",
+    "@testing-library/react": "^13.4.0",
     "@textlint/script-compiler": "^0.12.1",
     "@typescript-eslint/eslint-plugin": "^5.47.0",
     "@typescript-eslint/parser": "^5.47.0",
+    "@vitejs/plugin-react": "^3.0.0",
+    "@vitest/coverage-c8": "^0.26.2",
     "eslint": "^8.30.0",
+    "eslint-config-next": "13.0.7",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-react": "^7.31.11",
+    "happy-dom": "^8.1.1",
+    "next-router-mock": "^0.8.0",
     "prettier": "^2.8.1",
     "textlint": "^12.2.4",
     "textlint-rule-preset-japanese": "^7.0.0",
-    "textlint-rule-prh": "^5.3.0"
+    "textlint-rule-prh": "^5.3.0",
+    "vite-tsconfig-paths": "^4.0.3",
+    "vitest": "^0.26.2"
   }
 }
