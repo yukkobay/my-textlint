@@ -7,7 +7,8 @@
     "build": "next build && next export",
     "start": "next start",
     "lint": "next lint",
-    "compile-textlint-worker": "textlint-script-compiler --mode production --output-dir ./public --metadataName 'textlint-worker' --metadataNamespace 'http://localhost:3000/' --metadataHomepage 'http://localhost:3000/'"
+    "compile-textlint-worker": "textlint-script-compiler --mode production --output-dir ./public --metadataName 'textlint-worker' --metadataNamespace 'http://localhost:3000/' --metadataHomepage 'http://localhost:3000/'",
+    "prebuild": "npm run compile-textlint-worker"
   },
   "dependencies": {
     "@next/font": "13.0.7",
