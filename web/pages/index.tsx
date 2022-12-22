@@ -1,7 +1,33 @@
 import Head from 'next/head'
 import styles from '../styles/Home.module.css'
+import {type} from "os";
+import {useEffect} from "react";
 
 export default function Home() {
+
+  useEffect(() => {
+    const textlintWorker = new Worker("/textlint-worker.js")
+
+    function postToTextlint(text: string) {
+      if (typeof window) {
+        textlintWorker.postMessage({ command: "lint", text: text, ext: ".txt"})
+      }
+    }
+
+    function registerTextlintCallback() {
+      textlintWorker.onmessage = (event) => {
+        if (event.data.command === "lint:result") {
+          console.log(event);
+          const messages = event.data.result.messages
+          console.log(messages)
+        }
+      }
+    }
+
+    registerTextlintCallback()
+    postToTextlint("一文で、使える、読点の、数は、どうやら、3つらしいです。")
+  }, [])
+
   return (
     <>
       <Head>
