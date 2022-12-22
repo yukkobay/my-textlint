@@ -1,32 +1,37 @@
 import Head from 'next/head'
 import styles from '../styles/Home.module.css'
-import {type} from "os";
 import {useEffect} from "react";
+import {useRouter} from "next/router";
 
 export default function Home() {
+  const { basePath } = useRouter()
+  const getPath = (path: string) => `${basePath}${path}`
 
   useEffect(() => {
-    const textlintWorker = new Worker("/textlint-worker.js")
+    let textlintWorker: Worker
+
+    if (typeof window) {
+      textlintWorker = new Worker(getPath("/textlint-worker.js?d=3"))
+    }
 
     function postToTextlint(text: string) {
-      if (typeof window) {
-        textlintWorker.postMessage({ command: "lint", text: text, ext: ".txt"})
-      }
+      console.log("Post:", text)
+      textlintWorker.postMessage({ command: "lint", text: text, ext: ".txt"})
     }
 
     function registerTextlintCallback() {
       textlintWorker.onmessage = (event) => {
         if (event.data.command === "lint:result") {
-          console.log(event);
           const messages = event.data.result.messages
           console.log(messages)
         }
       }
     }
-
-    registerTextlintCallback()
-    postToTextlint("一文で、使える、読点の、数は、どうやら、3つらしいです。")
-  }, [])
+    if (typeof window) {
+      registerTextlintCallback()
+      postToTextlint("一文で、使える、読点の、数は、どうやら、3つらしいです。")
+    }
+  }, [basePath])
 
   return (
     <>

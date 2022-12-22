@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  assetPrefix: process.env.GITHUB_ACTIONS ? "/textlint-for-labs" : '',
+  assetPrefix: process.env.GITHUB_ACTIONS ? "/textlint-for-labs" : '/',
   basePath: process.env.GITHUB_ACTIONS ? "/textlint-for-labs" : '',
 }
 
