@@ -1,22 +1,22 @@
 import Head from 'next/head'
 import styles from '../styles/Home.module.css'
-import {useEffect} from 'react'
-import {useRouter} from 'next/router'
+import { useCallback, useEffect } from 'react'
+import { useRouter } from 'next/router'
 
 export default function Home() {
   const { basePath } = useRouter()
-  const getPath = (path: string) => `${basePath}${path}`
+  const getPath = useCallback((path: string) => basePath + path, [basePath])
 
   useEffect(() => {
     let textlintWorker: Worker
 
-    if (typeof window) {
+    if (typeof window === 'undefined') {
       textlintWorker = new Worker(getPath('/textlint-worker.js?d=3'))
     }
 
     function postToTextlint(text: string) {
       console.log('Post:', text)
-      textlintWorker.postMessage({ command: 'lint', text: text, ext: '.txt'})
+      textlintWorker.postMessage({ command: 'lint', text: text, ext: '.txt' })
     }
 
     function registerTextlintCallback() {
@@ -27,11 +27,12 @@ export default function Home() {
         }
       }
     }
-    if (typeof window) {
+
+    if (typeof window === 'undefined') {
       registerTextlintCallback()
       postToTextlint('一文で、使える、読点の、数は、どうやら、3つらしいです。')
     }
-  }, [basePath])
+  }, [getPath])
 
   return (
     <>
@@ -43,9 +44,7 @@ export default function Home() {
       </Head>
       <main className={styles.main}>
         <div className={styles.description}>
-          <p>
-            こんにちは
-          </p>
+          <p>こんにちは</p>
         </div>
       </main>
     </>

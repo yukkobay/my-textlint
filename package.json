@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build && next export",
     "start": "next start",
-    "lint": "eslint --fix . --ext .js --ext .ts --ext .tsx",
+    "_format": "prettier --write --ignore-path .eslintignore '**/*.{js,ts,tsx}'",
+    "_lint": "eslint . --ext .js --ext .ts --ext .tsx --fix --cache --cache-location ./node_modules/.cache/eslint",
+    "lint": "npm run _format && npm run _lint",
     "compile-textlint-worker": "textlint-script-compiler --mode production --output-dir ./public --metadataName 'textlint-worker' --metadataNamespace 'http://localhost:3000/' --metadataHomepage 'http://localhost:3000/'",
     "prebuild": "npm run compile-textlint-worker"
   },
@@ -26,7 +28,9 @@
     "@typescript-eslint/eslint-plugin": "^5.47.0",
     "@typescript-eslint/parser": "^5.47.0",
     "eslint": "^8.30.0",
+    "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-react": "^7.31.11",
+    "prettier": "^2.8.1",
     "textlint": "^12.2.4",
     "textlint-rule-preset-japanese": "^7.0.0",
     "textlint-rule-prh": "^5.3.0"
