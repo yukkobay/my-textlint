@@ -9,7 +9,8 @@ export default defineConfig({
   plugins: [react(), tsconfigPaths()],
   test: {
     globals: true,
-    environment: 'happy-dom',
-    setupFiles: ['./test/setup-test-env.ts'],
+    environment: 'jsdom',
+    setupFiles: ['./test/setup-test-env.ts', '@vitest/web-worker'],
+    clearMocks: true,
   },
 })

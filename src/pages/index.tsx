@@ -2,37 +2,40 @@ import Head from 'next/head'
 import styles from '../styles/Home.module.css'
 import { useCallback, useEffect } from 'react'
 import { useRouter } from 'next/router'
+import { makeWorker } from '../common/WokerFactory'
+import debounce from 'just-debounce-it'
 
 export default function Home() {
   const { basePath } = useRouter()
   const getPath = useCallback((path: string) => basePath + path, [basePath])
+  let textlintWorker: Worker | undefined
 
   useEffect(() => {
-    let textlintWorker: Worker
+    textlintWorker = makeWorker(getPath('/textlint-worker.js'))
 
-    if (typeof window === 'undefined') {
-      textlintWorker = new Worker(getPath('/textlint-worker.js?d=3'))
-    }
-
-    function postToTextlint(text: string) {
-      console.log('Post:', text)
-      textlintWorker.postMessage({ command: 'lint', text: text, ext: '.txt' })
-    }
-
-    function registerTextlintCallback() {
-      textlintWorker.onmessage = (event) => {
-        if (event.data.command === 'lint:result') {
-          const messages = event.data.result.messages
-          console.log(messages)
-        }
-      }
-    }
-
-    if (typeof window === 'undefined') {
-      registerTextlintCallback()
-      postToTextlint('一文で、使える、読点の、数は、どうやら、3つらしいです。')
-    }
+    //
+    //   function registerTextlintCallback() {
+    //     textlintWorker.onmessage = (event) => {
+    //       if (event.data.command === 'lint:result') {
+    //         const messages = event.data.result.messages
+    //         console.log(messages)
+    //       }
+    //     }
+    //   }
+    //
+    //   if (typeof window === 'undefined') {
+    //     registerTextlintCallback()
+    //     postToTextlint('一文で、使える、読点の、数は、どうやら、3つらしいです。')
+    //   }
   }, [getPath])
+
+  const postToWorker = debounce((text: string) => {
+    textlintWorker?.postMessage({ command: 'lint', text: text, ext: '.txt' })
+  }, 750)
+  // const postToWorker = (text: string) => {
+  //   console.log(text)
+  //   textlintWorker?.postMessage({ command: 'lint', text: text, ext: '.txt' })
+  // }
 
   return (
     <>
@@ -43,9 +46,11 @@ export default function Home() {
         <link rel="icon" href={getPath('/favicon.ico')} />
       </Head>
       <main className={styles.main}>
-        <div className={styles.description}>
-          <p>こんにちは</p>
-        </div>
+        <textarea
+          onChange={(e) => {
+            postToWorker(e.target.value)
+          }}
+        />
       </main>
     </>
   )
